@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>	
+	<entry key="source.datasource.driverclassname">org.apache.derby.jdbc.ClientDriver</entry>
+	<entry key="source.datasource.url">jdbc:derby://localhost:8233/derbyDB;create=true</entry>
+	<entry key="source.datasource.username">derby</entry>
+	<entry key="source.datasource.password">derby</entry>
+	
+	<entry key="target.outbounddatasource.driverclassname">com.tmax.tibero.jdbc.TbDriver</entry>
+	<entry key="target.outbounddatasource.url">jdbc:tibero:thin:@70.121.245.149:8629:src</entry>
+	<entry key="target.outbounddatasource.username">OPENPMS_SRC_IF</entry>
+	<entry key="target.outbounddatasource.password">sds000</entry>
+	
+	
+	<entry key="source.repo.schemaName">SRC</entry>
+	<entry key="target.repo.schemaName">OPENPMS_SRC_IF</entry>
+</properties>

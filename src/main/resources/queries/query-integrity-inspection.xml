@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       
+ <bean id="query.integrity.check" class="java.util.HashMap" >
+  <constructor-arg> 
+   <map>
+    <entry key="integrity.checkSchema">
+	 <value><![CDATA[
+	 	select * from sys.sysschemas where schemaname = :derbySchemaName
+	 ]]></value>
+	</entry>
+	
+	<entry key="integrity.derby.selectIfTableColumnInformation">
+   	<value><![CDATA[
+	   		select tablename TABLE_NAME, columnname COLUMN_NAME, columndatatype COLUMN_DATA, columnnumber COLUMN_ORDER
+			from sys.systables  t, sys.syscolumns  c 
+			where t.tablename like :interfacetablePrefix || '%'
+			and t.tableid = c.referenceid
+			order by tablename, columnnumber
+   	]]></value>
+   	</entry>
+   			
+   	
+	<entry key="integrity.tibero.selectIfTableColumnInformation">
+   	<value><![CDATA[
+	   	SELECT TABLE_NAME , COLUMN_NAME , DATA_TYPE , DATA_LENGTH, COLUMN_ID COLUMN_ORDER, NULLABLE 
+	   	FROM all_tab_columns
+ 		WHERE OWNER = :outboundSchemaName
+ 		and table_name like :interfacetablePrefix || '%'
+ 		order by table_name, column_id
+   	]]></value>
+   	</entry>
+   	
+   	
+   </map>
+  </constructor-arg>
+ </bean>
+</beans>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+						http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.0.xsd
+						http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc-4.0.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- <util:properties id="application" location="classpath:server.properties" />   -->
+	<context:property-placeholder ignore-unresolvable="true" 
+		 location="classpath:project-database-setting.xml" />	
+		 
+		 	
+	<context:annotation-config/>    
+	
+	<context:component-scan base-package="org.tolmie.dc"/>
+	
+	<bean id="svc" class="org.tolmie.dc.derby.service.RedcaIntegrityInspectionSVC" />
+
+<!-- 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver"/>
+        <property name="url" value="#{application['source.datasource.url']}"/>
+        <property name="username" value="#{application['source.datasource.username']}"/>
+        <property name="password" value="#{application['source.datasource.password']}"/>
+    </bean>
+    		  
+    <bean id="outboundDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.tmax.tibero.jdbc.TbDriver"/>
+        <property name="url" value="#{application['target.datasource.url']}"/>
+        <property name="username" value="#{application['target.datasource.username']}"/>
+        <property name="password" value="#{application['target.datasource.password']}"/>
+    </bean>
+	 -->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${source.datasource.driverclassname}"/>
+        <property name="url" value="${source.datasource.url}"/>
+        <property name="username" value="${source.datasource.username}"/>
+        <property name="password" value="${source.datasource.password}"/>
+    </bean>
+    		  
+    <bean id="outboundDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${target.outbounddatasource.driverclassname}"/>
+        <property name="url" value="${target.outbounddatasource.url}"/>
+        <property name="username" value="${target.outbounddatasource.username}"/>
+        <property name="password" value="${target.outbounddatasource.password}"/>
+    </bean>
+    
+
+	<!-- query service configuration  -->		
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+	
+	<bean id="targetJdbcTemplate" class="org.tolmie.dc.derby.loader.ExtendedJdbcTemplate">
+		<property name="dataSource" ref="outboundDataSource"/>
+	</bean>
+		
+	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="jdbcTemplate"/>
+	</bean>
+			
+	<bean id="extendedJdbcTemplate" class="org.tolmie.dc.derby.loader.ExtendedJdbcTemplate">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+	
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

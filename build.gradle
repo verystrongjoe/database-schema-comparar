@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName ="org.tolmie.dc.derby.Initiailizer"
+
+def spring_version = '4.0.7.RELEASE'
+
+installApp.doLast {
+// 		ant.copy(file: '' + projectDir +'/script/derby-schema-install.sql' , todir: ''+installApp.destinationDir+'/script')
+// 		ant.copy(file: '' + projectDir +'/script/derby-initial-data.sql' , todir: ''+installApp.destinationDir+'/script' )
+}
+
+// compile option 
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8' // compileGroovy, compileTestGroovy
+
+repositories{
+		jcenter()
+	}
+dependencies {
+  
+  	compile group: 'org.apache.derby', name: 'derbynet', version: '10.11.1.1'
+    compile group: 'org.apache.derby', name: 'derbyclient', version: '10.11.1.1'
+	compile group: 'org.springframework', name: 'spring-core', version:spring_version
+	compile group: 'org.springframework', name: 'spring-jdbc', version:spring_version
+	runtime group: 'org.apache.derby', name: 'derby', version: '10.11.1.1'
+	compile group: 'org.springframework', name: 'spring-context', version:spring_version
+	
+	compile 'ch.qos.logback:logback-core:+'
+	compile 'ch.qos.logback:logback-classic:+'
+	compile 'org.slf4j:slf4j-api:+'
+	
+	compile group: 'commons-dbcp', name: 'commons-dbcp', version:'1.4'
+	
+	compile ( group: 'org.apache.derby', name: 'derbytools', version:'10.11.1.1' )
+	{
+		exclude(group: 'org.apache.derby', module: 'derbyclient')
+	}	
+	
+	runtime 'com.tmax.tibero:tibero-jdbc:5.0'
+}
+
+//applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
